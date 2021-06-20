@@ -1,0 +1,4 @@
+{
+    "httpMethod": "POST",
+    "body": "{\"id\": \"01\",\"name\": \"Developing on AWS\"}"
+}
