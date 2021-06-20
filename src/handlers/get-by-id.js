@@ -1,5 +1,7 @@
-const dynamodb = require('aws-sdk/clients/dynamodb');
-const docClient = new dynamodb.DocumentClient();
+const AWS = require('aws-sdk');
+const dynamodb = new AWS.DynamoDB({
+    endpoint: 'http://172.17.0.2:8000'
+});
 
 const tableName = process.env.TABLE;
 
@@ -13,10 +15,10 @@ exports.getByIdHandler = async (event) => {
 
     var params = {
         TableName : tableName,
-        Key: { id: id },
+        Key: { id: {S:id} },
     };
     
-    const data = await docClient.get(params).promise();
+    const data = await dynamodb.getItem(params).promise();
     
     const item = data.Item;
   

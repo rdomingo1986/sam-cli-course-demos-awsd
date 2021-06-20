@@ -1,5 +1,7 @@
-const dynamodb = require('aws-sdk/clients/dynamodb');
-const docClient = new dynamodb.DocumentClient();
+const AWS = require('aws-sdk');
+const dynamodb = new AWS.DynamoDB({
+    endpoint: 'http://172.17.0.2:8000'
+});
 
 const tableName = process.env.TABLE;
 
@@ -17,10 +19,10 @@ exports.putItemHandler = async (event) => {
 
     var params = {
         TableName : tableName,
-        Item: { id : id, name: name }
+        Item: { id : {S:id}, name: {S:name} }
     };
 
-    const result = await docClient.put(params).promise();
+    const result = await dynamodb.putItem(params).promise();
 
     const response = {
         statusCode: 200,
