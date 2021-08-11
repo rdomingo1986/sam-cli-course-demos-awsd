@@ -1,7 +1,14 @@
-const dynamodb = require('aws-sdk/clients/dynamodb');
-const docClient = new dynamodb.DocumentClient();
+var AWS = require("aws-sdk");
 
 const tableName = process.env.TABLE;
+
+var dynamodb = new AWS.DynamoDB();
+if(tableName == 'localTable') {
+    dynamodb = new AWS.DynamoDB({
+        endpoint: 'http://172.17.0.2:8000',
+        region: 'us-west-2'
+    });
+}
 
 exports.putItemHandler = async (event) => {
     if (event.httpMethod !== 'POST') {
@@ -17,10 +24,10 @@ exports.putItemHandler = async (event) => {
 
     var params = {
         TableName : tableName,
-        Item: { id : id, name: name }
+        Item: { id : {S: id}, name: {S: name} }
     };
 
-    const result = await docClient.put(params).promise();
+    const result = await dynamodb.putItem(params).promise();
 
     const response = {
         statusCode: 200,
